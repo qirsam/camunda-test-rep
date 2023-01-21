@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1oh19dm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="Lesson13_Process" name="Демонстрация автотестов для схем BPMN" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>Flow_0ai817e</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ai817e" sourceRef="start" targetRef="call_internal_service_task" />
+    <bpmn:serviceTask id="call_internal_service_task" name="Вызвать внутреннюю служебную задачу" camunda:asyncBefore="true" camunda:delegateExpression="#{SomeInternalServiceTask}">
+      <bpmn:incoming>Flow_0ai817e</bpmn:incoming>
+      <bpmn:outgoing>Flow_046h28d</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_046h28d" sourceRef="call_internal_service_task" targetRef="call_external_service_task" />
+    <bpmn:serviceTask id="call_external_service_task" name="Вызвать внешнюю служебную задачу" camunda:asyncBefore="true" camunda:type="external" camunda:topic="some_topic">
+      <bpmn:incoming>Flow_046h28d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kcn5wq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>Flow_0npd8ja</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1kcn5wq" sourceRef="call_external_service_task" targetRef="some_message_received_from_external_system" />
+    <bpmn:exclusiveGateway id="gateway_open" name="Произошла ли ошибка?" camunda:asyncBefore="true" default="Flow_05dgj31">
+      <bpmn:incoming>Flow_13z7h4j</bpmn:incoming>
+      <bpmn:outgoing>Flow_05dgj31</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05900zu</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_13z7h4j" sourceRef="some_message_received_from_external_system" targetRef="gateway_open" />
+    <bpmn:exclusiveGateway id="gateway_close" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_05dgj31</bpmn:incoming>
+      <bpmn:incoming>Flow_1p4qadi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0npd8ja</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_05dgj31" name="Нет" sourceRef="gateway_open" targetRef="gateway_close" />
+    <bpmn:sequenceFlow id="Flow_0npd8ja" sourceRef="gateway_close" targetRef="end" />
+    <bpmn:sequenceFlow id="Flow_05900zu" name="Да" sourceRef="gateway_open" targetRef="process_error">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${SUCCESS==false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1p4qadi" sourceRef="process_error" targetRef="gateway_close" />
+    <bpmn:serviceTask id="process_error" name="Обработать ошибку" camunda:asyncBefore="true" camunda:delegateExpression="#{ProcessError}">
+      <bpmn:incoming>Flow_05900zu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p4qadi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="some_message_received_from_external_system" name="Пришло какое-то сообщение из сторонней системы" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_1kcn5wq</bpmn:incoming>
+      <bpmn:outgoing>Flow_13z7h4j</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_14rkqq9" messageRef="Message_1mo7sbc" />
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_1mo7sbc" name="some_message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Lesson13_Process">
+      <bpmndi:BPMNEdge id="Flow_0ai817e_di" bpmnElement="Flow_0ai817e">
+        <di:waypoint x="215" y="227" />
+        <di:waypoint x="270" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_046h28d_di" bpmnElement="Flow_046h28d">
+        <di:waypoint x="370" y="227" />
+        <di:waypoint x="430" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kcn5wq_di" bpmnElement="Flow_1kcn5wq">
+        <di:waypoint x="530" y="227" />
+        <di:waypoint x="612" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13z7h4j_di" bpmnElement="Flow_13z7h4j">
+        <di:waypoint x="648" y="227" />
+        <di:waypoint x="735" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05dgj31_di" bpmnElement="Flow_05dgj31">
+        <di:waypoint x="785" y="227" />
+        <di:waypoint x="995" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="793" y="209" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0npd8ja_di" bpmnElement="Flow_0npd8ja">
+        <di:waypoint x="1045" y="227" />
+        <di:waypoint x="1192" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05900zu_di" bpmnElement="Flow_05900zu">
+        <di:waypoint x="760" y="202" />
+        <di:waypoint x="760" y="120" />
+        <di:waypoint x="860" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="768" y="158" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p4qadi_di" bpmnElement="Flow_1p4qadi">
+        <di:waypoint x="960" y="120" />
+        <di:waypoint x="1020" y="120" />
+        <di:waypoint x="1020" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="179" y="209" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m0icif_di" bpmnElement="call_internal_service_task">
+        <dc:Bounds x="270" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0netxoe_di" bpmnElement="call_external_service_task">
+        <dc:Bounds x="430" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1v2pbcf_di" bpmnElement="gateway_open" isMarkerVisible="true">
+        <dc:Bounds x="735" y="202" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="723" y="259" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wsv400_di" bpmnElement="end">
+        <dc:Bounds x="1192" y="209" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_182xcn3_di" bpmnElement="process_error">
+        <dc:Bounds x="860" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0hdd2zy_di" bpmnElement="gateway_close" isMarkerVisible="true">
+        <dc:Bounds x="995" y="202" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14tniza_di" bpmnElement="some_message_received_from_external_system">
+        <dc:Bounds x="612" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="586" y="252" width="88" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

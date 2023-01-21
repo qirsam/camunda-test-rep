@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_17sgjnn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Lesson9Process" name="Процесс 9-го урока" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>Flow_067x7np</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_067x7np" sourceRef="start" targetRef="is_country_eu_member" />
+    <bpmn:businessRuleTask id="is_country_eu_member" name="Определить, является ли страна членом ЕС" camunda:asyncBefore="true" camunda:resultVariable="is_eu_member" camunda:decisionRef="EU_Membership" camunda:mapDecisionResult="singleEntry">
+      <bpmn:incoming>Flow_067x7np</bpmn:incoming>
+      <bpmn:outgoing>Flow_01o0hf5</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:endEvent id="end" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_01o0hf5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_01o0hf5" sourceRef="is_country_eu_member" targetRef="end" />
+    <bpmn:textAnnotation id="TextAnnotation_0qf4072">
+      <bpmn:text>При старте задаем в Экскамаде переменную country -- название страны.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1h0j9zq" sourceRef="start" targetRef="TextAnnotation_0qf4072" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Lesson9Process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="152" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r67trt_di" bpmnElement="is_country_eu_member">
+        <dc:Bounds x="240" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_068lgz5_di" bpmnElement="end">
+        <dc:Bounds x="392" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0qf4072_di" bpmnElement="TextAnnotation_0qf4072">
+        <dc:Bounds x="120" y="80" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_067x7np_di" bpmnElement="Flow_067x7np">
+        <di:waypoint x="188" y="220" />
+        <di:waypoint x="240" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01o0hf5_di" bpmnElement="Flow_01o0hf5">
+        <di:waypoint x="340" y="220" />
+        <di:waypoint x="392" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1h0j9zq_di" bpmnElement="Association_1h0j9zq">
+        <di:waypoint x="170" y="202" />
+        <di:waypoint x="170" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

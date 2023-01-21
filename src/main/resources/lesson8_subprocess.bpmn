@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0mwvhx5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="Lesson8SubProcess" name="Подпроцесс 8-го урока" isExecutable="true" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>Flow_0n2g68x</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="output_process_variables_to_console" name="Вывести процессуальные переменные в консоль" camunda:asyncBefore="true" camunda:delegateExpression="#{ВывестиПроцессуальныеПеременныеВКонсоль}">
+      <bpmn:incoming>Flow_07rt0pm</bpmn:incoming>
+      <bpmn:outgoing>Flow_17wfa9m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0n2g68x" sourceRef="start" targetRef="set_subprocess_variable" />
+    <bpmn:endEvent id="end" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_17wfa9m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_17wfa9m" sourceRef="output_process_variables_to_console" targetRef="end" />
+    <bpmn:task id="set_subprocess_variable" name="Установить переменные подпроцесса" camunda:asyncBefore="true">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="переменная_подпроцесса_2">Рыба2</camunda:outputParameter>
+          <camunda:outputParameter name="переменная_подпроцесса_1">Рыба1</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0n2g68x</bpmn:incoming>
+      <bpmn:outgoing>Flow_07rt0pm</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_07rt0pm" sourceRef="set_subprocess_variable" targetRef="output_process_variables_to_console" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Lesson8SubProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="152" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fw0jiu_di" bpmnElement="output_process_variables_to_console">
+        <dc:Bounds x="370" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1x97nfr_di" bpmnElement="end">
+        <dc:Bounds x="542" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nyceej_di" bpmnElement="set_subprocess_variable">
+        <dc:Bounds x="220" y="60" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0n2g68x_di" bpmnElement="Flow_0n2g68x">
+        <di:waypoint x="188" y="100" />
+        <di:waypoint x="220" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17wfa9m_di" bpmnElement="Flow_17wfa9m">
+        <di:waypoint x="470" y="100" />
+        <di:waypoint x="542" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07rt0pm_di" bpmnElement="Flow_07rt0pm">
+        <di:waypoint x="320" y="100" />
+        <di:waypoint x="370" y="100" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
