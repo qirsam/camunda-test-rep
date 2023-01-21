@@ -63,4 +63,47 @@ public class Lesson13ProcessTest {
         //На этом процесс должен завершиться:
         assertThat(pi).isEnded();
     }
+
+    @Test
+    @Deployment(resources = {"lesson13my.bpmn"})
+    public void whenSomeMessageSentSuccessFalse(){
+        RuntimeService runtimeService = processEngineRule.getRuntimeService();
+
+        registerJavaDelegateMock("SomeInternalServiceTask");
+        registerJavaDelegateMock("ProcessError");
+
+        ProcessInstance process = runtimeService.startProcessInstanceByKey("Lesson13_Process");
+
+        assertThat(process).isStarted();
+
+        assertThat(process).isWaitingAt("call_internal_service_task");
+        execute(job());
+
+        verifyJavaDelegateMock("SomeInternalServiceTask").executed(Mockito.times(1));
+
+        assertThat(process).isWaitingAt("call_external_service_task");
+        execute(job());
+        complete(externalTask("call_external_service_task"));
+
+        assertThat(process).isWaitingAt("some_message_received_from_external_system");
+        execute(job());
+
+        processEngineRule.getRuntimeService()
+                .createMessageCorrelation("some_message")
+                .processInstanceId(process.getProcessInstanceId())
+                .setVariable("SUCCESS", false)
+                .correlate();
+
+        assertThat(process).isWaitingAt("gateway_open");
+        execute(job());
+
+        assertThat(process).isWaitingAt("process_error");
+        execute(job());
+        verifyJavaDelegateMock("ProcessError").executed(Mockito.times(1));
+
+        assertThat(process).isWaitingAt("gateway_close");
+        execute(job());
+
+        assertThat(process).isEnded();
+    }
 }
